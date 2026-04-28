@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Visage External — AI-Powered External Aimbot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #080a0e;
+    --bg2:      #0d1017;
+    --bg3:      #111620;
+    --border:   #1e2535;
+    --border2:  #2a3448;
+    --text:     #c8d4e8;
+    --text-br:  #e8f0ff;
+    --muted:    #4a5a78;
+    --accent:   #00d4ff;
+    --green:    #00ff88;
+    --red:      #ff4455;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ── Noise overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── Grid background ── */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 60px;
+    background: rgba(8,10,14,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--text-br); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 8px 20px;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { background: var(--green); }
+
+  /* ── Sections ── */
+  section { position: relative; z-index: 1; }
+
+  /* ── Hero ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,212,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    border: 1px solid var(--border2);
+    padding: 6px 16px;
+    margin-bottom: 32px;
+    display: inline-block;
+    position: relative;
+  }
+  .hero-tag::before, .hero-tag::after {
+    content: '';
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--accent);
+  }
+  .hero-tag::before { top: -3px; left: -3px; }
+  .hero-tag::after  { bottom: -3px; right: -3px; }
+
+  h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text-br);
+    margin-bottom: 8px;
+  }
+  h1 .accent { color: var(--accent); }
+
+  .hero-sub {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(14px, 2vw, 20px);
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 32px;
+  }
+
+  .hero-desc {
+    max-width: 580px;
+    font-size: 18px;
+    color: var(--text);
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  .hero-desc strong { color: var(--accent); font-weight: 600; }
+
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    padding: 14px 32px;
+    text-decoration: none;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .btn-primary:hover {
+    background: var(--green);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid var(--accent);
+    padding: 14px 32px;
+    text-decoration: none;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover {
+    background: rgba(0,212,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    margin-top: 72px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  /* ── Detection demo ── */
+  #demo {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 80px;
+  }
+
+  .demo-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 16px;
+  }
+
+  /* The Roblox screenshot with detection overlay */
+  .demo-visual {
+    position: relative;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    overflow: hidden;
+  }
+
+  .demo-visual::before {
+    content: 'LIVE DETECTION';
+    position: absolute;
+    top: 12px; left: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .demo-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .demo-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.7) saturate(0.8);
+  }
+
+  /* Detection box SVG overlay */
+  .detection-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Scanline effect */
+  .demo-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .demo-hud {
+    position: absolute;
+    bottom: 12px; left: 12px; right: 12px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: rgba(0,212,255,0.6);
+    letter-spacing: 0.1em;
+  }
+
+  /* Scroll-driven detection paragraphs */
+  .demo-content h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 700;
+    color: var(--text-br);
+    line-height: 1.2;
+    margin-bottom: 40px;
+  }
+  .demo-content h2 span { color: var(--accent); }
+
+  .demo-paragraphs { position: relative; }
+
+  .demo-para {
+    padding: 24px 24px 24px 32px;
+    margin-bottom: 8px;
+    border-left: 2px solid var(--border);
+    position: relative;
+    transition: border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+
+  .demo-para.active {
+    border-left-color: var(--accent);
+    background: rgba(0,212,255,0.04);
+  }
+
+  .demo-para-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+  }
+  .demo-para.active .demo-para-title { color: var(--accent); }
+
+  .demo-para-text {
+    font-size: 16px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .demo-para-indicator {
+    position: absolute;
+    left: -5px; top: 24px;
+    width: 8px; height: 8px;
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    border-radius: 50%;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .demo-para.active .demo-para-indicator {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* ── Features ── */
+  #features {
+    padding: 120px 48px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .features-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .features-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+    margin-bottom: 72px;
+  }
+
+  .features-header h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700;
+    color: var(--text-br);
+    line-height: 1.1;
+  }
+  .features-header h2 span { color: var(--accent); }
+
+  .features-header p {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .feature-card {
+    background: var(--bg3);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .feature-card:hover { background: #151d2e; }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 40px; height: 40px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .feature-icon svg {
+    width: 100%; height: 100%;
+  }
+
+  .feature-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-br);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .feature-desc {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .feature-tag {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    margin-top: 16px;
+    background: rgba(0,212,255,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+
+  /* ── Video placeholder ── */
+  #video {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .video-wrap {
+    margin-top: 32px;
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .video-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(45deg, transparent 49%, var(--border) 49%, var(--border) 51%, transparent 51%),
+      linear-gradient(-45deg, transparent 49%, var(--border) 49%, var(--border) 51%, transparent 51%);
+    background-size: 40px 40px;
+    opacity: 0.15;
+  }
+
+  .video-placeholder-inner {
+    text-align: center;
+    z-index: 1;
+    position: relative;
+  }
+
+  .video-placeholder-inner .play-icon {
+    width: 64px; height: 64px;
+    border: 2px solid var(--border2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: var(--muted);
+  }
+
+  .video-placeholder-inner p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .video-label {
+    position: absolute;
+    top: 16px; left: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+  }
+
+  /* ── Setup ── */
+  #setup {
+    padding: 120px 48px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+
+  .setup-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .setup-content h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 700;
+    color: var(--text-br);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .setup-content h2 span { color: var(--accent); }
+
+  .setup-content > p {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+
+  .setup-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    padding: 16px 20px;
+    background: rgba(0,255,136,0.05);
+    border: 1px solid rgba(0,255,136,0.15);
+    border-left: 3px solid var(--green);
+    line-height: 1.6;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--bg3);
+    border: 1px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .step:hover {
+    border-color: var(--border2);
+    background: #13192a;
+  }
+
+  .step-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.2);
+    width: 28px; height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  .step-body {}
+  .step-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-br);
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .step-title a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .step-title a:hover { text-decoration: underline; }
+
+  .step-desc {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ── Footer ── */
+  footer {
+    padding: 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+  }
+  .footer-logo span { color: var(--muted); }
+
+  footer p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ── Animations ── */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  @keyframes scan-line {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes box-blink {
+    0%, 90%, 100% { opacity: 1; }
+    95% { opacity: 0.4; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    animation: fade-up 0.7s ease forwards;
+  }
+  .fade-up.d1 { animation-delay: 0.1s; }
+  .fade-up.d2 { animation-delay: 0.25s; }
+  .fade-up.d3 { animation-delay: 0.4s; }
+  .fade-up.d4 { animation-delay: 0.55s; }
+  .fade-up.d5 { animation-delay: 0.7s; }
+
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse-dot 1.2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  /* Scanning line on demo visual */
+  .scan-beam {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 8;
+    animation: scan-line 3s linear infinite;
+  }
+
+  /* SVG detection box animation */
+  .det-box {
+    animation: box-blink 4s ease-in-out infinite;
+  }
+  .det-box-2 {
+    animation: box-blink 4s ease-in-out infinite 1.5s;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">VISAGE<span> EXTERNAL</span></a>
+  <ul class="nav-links">
+    <li><a href="#demo">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#video">Preview</a></li>
+    <li><a href="#setup">Setup</a></li>
+  </ul>
+  <a href="https://github.com/IcebergBuilds/Visage-External/releases/latest" class="nav-cta">Download</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-tag fade-up d1"><span class="live-dot"></span>100% External — Zero Injection</div>
+
+  <h1 class="fade-up d2"><span class="accent">VISAGE</span><br>EXTERNAL</h1>
+  <p class="hero-sub fade-up d3">AI-Powered Detection</p>
+
+  <p class="hero-desc fade-up d4">
+    Uses <strong>live computer vision</strong> to detect and track players in real time.
+    No memory reading. No DLL injection. No hooks.
+    The game never knows it exists.
+  </p>
+
+  <div class="hero-buttons fade-up d5">
+    <a href="https://github.com/IcebergBuilds/Visage-External/releases/latest" class="btn-primary">Download Latest</a>
+    <a href="#setup" class="btn-secondary">How to Set Up</a>
+  </div>
+
+  <div class="hero-stats fade-up d5">
+    <div class="stat">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">External</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">YOLO</span>
+      <span class="stat-label">AI Model</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">GPU</span>
+      <span class="stat-label">Accelerated</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">0</span>
+      <span class="stat-label">Injections</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEMO ── -->
+<section id="demo">
+  <div class="demo-layout">
+
+    <!-- Sticky detection visual -->
+    <div style="position: sticky; top: 100px;">
+      <div class="section-label">Detection Preview</div>
+      <div class="demo-visual">
+        <div class="demo-img-wrap">
+          <img src="Screenshot_2026-04-24_185618.png" alt="Roblox Rivals gameplay"/>
+
+          <!-- Scan beam -->
+          <div class="scan-beam"></div>
+
+          <!-- SVG overlay with detection boxes and dot -->
+          <svg class="detection-overlay" viewBox="0 0 1456 816" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <!-- Main character box -->
+            <g class="det-box" id="det-main">
+              <!-- Corner brackets only (like the script style) -->
+              <!-- Top-left -->
+              <line x1="548" y1="290" x2="548" y2="330" stroke="#00d4ff" stroke-width="2"/>
+              <line x1="548" y1="290" x2="588" y2="290" stroke="#00d4ff" stroke-width="2"/>
+              <!-- Top-right -->
+              <line x1="908" y1="290" x2="868" y2="290" stroke="#00d4ff" stroke-width="2"/>
+              <line x1="908" y1="290" x2="908" y2="330" stroke="#00d4ff" stroke-width="2"/>
+              <!-- Bottom-left -->
+              <line x1="548" y1="730" x2="548" y2="690" stroke="#00d4ff" stroke-width="2"/>
+              <line x1="548" y1="730" x2="588" y2="730" stroke="#00d4ff" stroke-width="2"/>
+              <!-- Bottom-right -->
+              <line x1="908" y1="730" x2="868" y2="730" stroke="#00d4ff" stroke-width="2"/>
+              <line x1="908" y1="730" x2="908" y2="690" stroke="#00d4ff" stroke-width="2"/>
+
+              <!-- Aim dot on head -->
+              <circle cx="728" cy="355" r="4" fill="#00d4ff" opacity="0.9"/>
+              <!-- Tiny crosshair -->
+              <line x1="718" y1="355" x2="738" y2="355" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+              <line x1="728" y1="345" x2="728" y2="365" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+
+              <!-- Label -->
+              <rect x="548" y="274" width="78" height="16" fill="#00d4ff" opacity="0.9"/>
+              <text x="553" y="285" fill="#080a0e" font-family="Share Tech Mono, monospace" font-size="9" letter-spacing="1">PLAYER</text>
+
+              <!-- Confidence -->
+              <text x="636" y="285" fill="#00d4ff" font-family="Share Tech Mono, monospace" font-size="9" opacity="0.7">0.94</text>
+            </g>
+
+            <!-- FOV circle -->
+            <circle cx="728" cy="408" r="220" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4 10" opacity="0.25"/>
+
+            <!-- HUD elements -->
+            <text x="20" y="24" fill="#00ff88" font-family="Share Tech Mono, monospace" font-size="10" letter-spacing="2" opacity="0.8">● LIVE DETECTION</text>
+            <text x="20" y="800" fill="#00d4ff" font-family="Share Tech Mono, monospace" font-size="9" opacity="0.5">FPS: 187</text>
+            <text x="1360" y="800" fill="#00d4ff" font-family="Share Tech Mono, monospace" font-size="9" opacity="0.5">AIM: ON</text>
+          </svg>
+        </div>
+
+        <div class="demo-hud">
+          <span>VISAGE EXTERNAL v1.0</span>
+          <span id="demo-fps-counter">TARGETS: 1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll paragraphs -->
+    <div class="demo-content">
+      <h2>How <span>AI detection</span> actually works</h2>
+
+      <div class="demo-paragraphs" id="demo-paras">
+
+        <div class="demo-para active" data-box="det-main">
+          <div class="demo-para-indicator"></div>
+          <div class="demo-para-title">01 — Screen Capture</div>
+          <p class="demo-para-text">Every frame, Visage captures a region of your screen using <code style="color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:13px;">mss</code> — a fast, zero-overhead screen grabber. No game files are touched. The game doesn't know anything is reading its pixels.</p>
+        </div>
+
+        <div class="demo-para" data-box="det-main">
+          <div class="demo-para-indicator"></div>
+          <div class="demo-para-title">02 — YOLO Inference</div>
+          <p class="demo-para-text">The captured frame is fed into a custom-trained YOLOv8 model. The model was specifically trained on Roblox player character shapes, so it accurately distinguishes real players from the environment even with varied lighting and angles.</p>
+        </div>
+
+        <div class="demo-para" data-box="det-main">
+          <div class="demo-para-indicator"></div>
+          <div class="demo-para-title">03 — GPU Acceleration</div>
+          <p class="demo-para-text">On NVIDIA cards, the model is automatically converted to a TensorRT engine on first launch — this happens once and takes about a minute. After that, inference runs at maximum efficiency for your specific GPU, keeping frame rates high.</p>
+        </div>
+
+        <div class="demo-para" data-box="det-main">
+          <div class="demo-para-indicator"></div>
+          <div class="demo-para-title">04 — Aim Assist</div>
+          <p class="demo-para-text">Once a target is detected, Visage calculates the offset between your crosshair and the target's head position and moves the mouse using Windows input APIs — the same way any normal mouse moves. Strength and smoothing are fully adjustable.</p>
+        </div>
+
+        <div class="demo-para" data-box="det-main">
+          <div class="demo-para-indicator"></div>
+          <div class="demo-para-title">05 — Zero Footprint</div>
+          <p class="demo-para-text">Because Visage reads pixels and moves a mouse — nothing more — it leaves no footprint inside the game process. There are no injected DLLs, no hooked functions, no modified memory. Anti-cheat systems that scan game memory find nothing, because nothing is there.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="features-inner">
+    <div class="features-header">
+      <div>
+        <div class="section-label">Capabilities</div>
+        <h2>Built for<br><span>precision</span></h2>
+      </div>
+      <p>Every feature is designed around one goal: staying ahead of detection while giving you a genuine edge. No bloat, no unnecessary complexity.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="20" cy="20" r="18" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="4 8"/>
+            <circle cx="20" cy="20" r="3" fill="#00d4ff"/>
+            <line x1="8" y1="20" x2="14" y2="20" stroke="#00d4ff" stroke-width="1.5"/>
+            <line x1="26" y1="20" x2="32" y2="20" stroke="#00d4ff" stroke-width="1.5"/>
+            <line x1="20" y1="8" x2="20" y2="14" stroke="#00d4ff" stroke-width="1.5"/>
+            <line x1="20" y1="26" x2="20" y2="32" stroke="#00d4ff" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Live AI Tracking</div>
+        <p class="feature-desc">YOLOv8-powered real-time detection identifies players every frame. Runs on your GPU for maximum performance with TensorRT optimisation on NVIDIA hardware.</p>
+        <span class="feature-tag">YOLOv8</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 32 L20 8 L32 32" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+            <path d="M12 24 L28 24" stroke="#00d4ff" stroke-width="1.5"/>
+            <circle cx="20" cy="8" r="3" fill="#00d4ff"/>
+          </svg>
+        </div>
+        <div class="feature-title">Aim Assist</div>
+        <p class="feature-desc">Smooth, configurable aim correction that moves toward the detected head position. Fully adjustable strength and FOV radius so it feels natural and stays under the radar.</p>
+        <span class="feature-tag">Configurable</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="14" width="28" height="18" rx="1" stroke="#00d4ff" stroke-width="1.5"/>
+            <path d="M14 14 L14 10 L26 10 L26 14" stroke="#00d4ff" stroke-width="1.5"/>
+            <line x1="13" y1="22" x2="27" y2="22" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+            <line x1="13" y1="26" x2="21" y2="26" stroke="#00d4ff" stroke-width="1" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Smoothing Engine</div>
+        <p class="feature-desc">Advanced movement smoothing prevents jittery, robotic aim that looks unnatural. Interpolates mouse movement over time to mimic human tracking behaviour.</p>
+        <span class="feature-tag">Anti-detection</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="24" height="24" stroke="#00d4ff" stroke-width="1.5"/>
+            <line x1="8" y1="16" x2="32" y2="16" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+            <circle cx="20" cy="25" r="4" stroke="#00ff88" stroke-width="1.5"/>
+            <line x1="20" y1="8" x2="20" y2="13" stroke="#00ff88" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">External Overlay</div>
+        <p class="feature-desc">A transparent overlay sits on top of the game, rendering detection boxes, dots, FOV circle, and live FPS counter without touching game memory.</p>
+        <span class="feature-tag">Read-only</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 6 L34 14 L34 26 L20 34 L6 26 L6 14 Z" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+            <path d="M20 12 L28 17 L28 23 L20 28 L12 23 L12 17 Z" stroke="#00d4ff" stroke-width="1" opacity="0.4" fill="none"/>
+            <circle cx="20" cy="20" r="2" fill="#00d4ff"/>
+          </svg>
+        </div>
+        <div class="feature-title">Save Profiles</div>
+        <p class="feature-desc">Five named save slots for your settings. Swap between configurations for different games or playstyles. Your last-used profile loads automatically on startup.</p>
+        <span class="feature-tag">5 Slots</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="18" width="24" height="16" rx="1" stroke="#00d4ff" stroke-width="1.5"/>
+            <path d="M14 18 L14 13 C14 9.7 26 9.7 26 13 L26 18" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+            <circle cx="20" cy="26" r="2" fill="#00d4ff"/>
+          </svg>
+        </div>
+        <div class="feature-title">Hotkey Control</div>
+        <p class="feature-desc">Assign any key or combination — F-keys, Ctrl+], anything — to toggle the aimbot or open the menu. Click the field and press your combo, no dropdowns.</p>
+        <span class="feature-tag">Any Key Combo</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── VIDEO ── -->
+<section id="video">
+  <div class="section-label">Showcase</div>
+  <h2 style="font-family:'Orbitron',monospace;font-size:clamp(24px,3vw,36px);font-weight:700;color:var(--text-br);margin-bottom:8px;">See It <span style="color:var(--accent)">In Action</span></h2>
+  <p style="color:var(--muted);font-size:16px;margin-bottom:32px;">Visage External running live in Rivals on Roblox.</p>
+
+  <div class="video-wrap">
+    <div class="video-label">RIVALS — ROBLOX</div>
+    <!-- Replace this div with a <video> tag when ready -->
+    <div class="video-placeholder-inner">
+      <div class="play-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M6 4l12 6-12 6V4z"/>
+        </svg>
+      </div>
+      <p>Gameplay showcase — coming soon</p>
+    </div>
+    <!-- <video src="your-video.mp4" controls autoplay muted loop style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"></video> -->
+  </div>
+</section>
+
+<!-- ── SETUP ── -->
+<section id="setup">
+  <div class="setup-inner">
+    <div class="setup-content">
+      <div class="section-label">Installation</div>
+      <h2>Up and running<br>in <span>under a minute</span></h2>
+      <p>No Python knowledge needed. No manual installs. The launcher handles everything automatically — on first run it installs all required components, then launches instantly on every run after that.</p>
+      <div class="setup-note">
+        ⚡ On first launch, Visage will install Python and all required packages automatically. If you have an NVIDIA GPU, it will also compile a TensorRT engine for your card — this takes 1–2 minutes and only happens once.
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title"><a href="https://github.com/IcebergBuilds/Visage-External/releases/latest" target="_blank">Download from GitHub Releases ↗</a></div>
+          <div class="step-desc">Grab the latest release zip from the releases page.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Extract the zip file</div>
+          <div class="step-desc">Right-click the zip and extract to a folder of your choice.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Run VisageExternal.exe</div>
+          <div class="step-desc">Double-click to launch. Windows may show a SmartScreen warning — click "More info" then "Run anyway."</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Wait for installation to complete</div>
+          <div class="step-desc">A terminal window will appear and install everything needed. This only happens on the first run.</div>
+        </div>
+      </div>
+      <div class="step" style="border-left:2px solid var(--green);background:rgba(0,255,136,0.03);">
+        <div class="step-num" style="color:var(--green);background:rgba(0,255,136,0.1);border-color:rgba(0,255,136,0.3);">✓</div>
+        <div class="step-body">
+          <div class="step-title" style="color:var(--green);">Done — you're ready</div>
+          <div class="step-desc">The settings menu will open. Configure your hotkeys, aim strength, and smoothness, then hit Launch.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">VISAGE<span> EXTERNAL</span></div>
+  <p>External AI detection. Zero injection.</p>
+  <ul class="footer-links">
+    <li><a href="https://github.com/IcebergBuilds/Visage-External" target="_blank">GitHub</a></li>
+    <li><a href="https://github.com/IcebergBuilds/Visage-External/releases/latest" target="_blank">Download</a></li>
+  </ul>
+</footer>
+
+<script>
+  // ── Scroll-driven detection box ──────────────────────────────────────────
+  const paras = document.querySelectorAll('.demo-para');
+  const svgBoxes = {
+    'det-main': document.getElementById('det-main'),
+  };
+
+  function getActivePara() {
+    let closest = paras[0];
+    let closestDist = Infinity;
+    paras.forEach(p => {
+      const rect = p.getBoundingClientRect();
+      const mid = rect.top + rect.height / 2;
+      const dist = Math.abs(mid - window.innerHeight * 0.45);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = p;
+      }
+    });
+    return closest;
+  }
+
+  function updateDemo() {
+    const active = getActivePara();
+    paras.forEach(p => p.classList.remove('active'));
+    active.classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateDemo, { passive: true });
+  updateDemo();
+
+  // ── Animated FPS counter ─────────────────────────────────────────────────
+  const fpsEl = document.getElementById('demo-fps-counter');
+  let fpsBase = 187;
+  setInterval(() => {
+    fpsBase = 175 + Math.floor(Math.random() * 25);
+    fpsEl.textContent = `FPS: ${fpsBase}`;
+  }, 800);
+
+  // ── Intersection observer for fade-in sections ───────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card, .step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
