@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visage External</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #C0392B;
+  --accent-dim: #8a2920;
+  --bg: #0F0F0F;
+  --bg2: #141414;
+  --bg3: #1a1a1a;
+  --border: #222222;
+  --text: #d4d0cc;
+  --text-dim: #666;
+  --text-bright: #f0ece8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(15,15,15,0.94);
+  backdrop-filter: blur(10px);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.12em;
+  color: var(--text-bright);
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 42px; list-style: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+.nav-links a:hover { color: var(--text-bright); }
+.nav-cta {
+  background: var(--accent);
+  color: #fff !important;
+  padding: 8px 22px;
+  font-size: 12px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--accent-dim) !important; }
+
+/* HERO */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.3;
+  mask-image: radial-gradient(ellipse 80% 70% at 40% 50%, black 20%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 2; max-width: 900px; }
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(90px, 13vw, 180px);
+  line-height: 0.9;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+}
+.hero-title .line2 {
+  display: block;
+  color: var(--accent);
+  padding-left: 6px;
+}
+.hero-sub {
+  margin-top: 40px;
+  font-size: 17px;
+  color: var(--text);
+  max-width: 480px;
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+/* Tight rotating line */
+.rotating-line {
+  margin-top: 52px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: 0;
+}
+.rotating-word-wrap {
+  position: relative;
+  display: inline-block;
+  height: 20px;
+  overflow: hidden;
+  vertical-align: middle;
+  transition: width 0.3s ease;
+}
+.rotating-word {
+  position: absolute;
+  top: 0; left: 0;
+  color: var(--accent);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(13px);
+  transition: opacity 0.35s, transform 0.35s;
+}
+.rotating-word.active { opacity: 1; transform: translateY(0); }
+
+.hero-actions {
+  margin-top: 52px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 38px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--accent-dim); }
+.btn-ghost {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: 'DM Mono', monospace;
+}
+.btn-ghost:hover { color: var(--text-bright); border-color: var(--text-dim); }
+
+/* STATEMENT */
+#statement {
+  padding: 140px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  border-top: 1px solid var(--border);
+}
+.statement-left h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 80px);
+  line-height: 1;
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+}
+.statement-left h2 em { font-style: normal; color: var(--accent); }
+.statement-right { display: flex; flex-direction: column; justify-content: center; }
+.statement-right p {
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+.rotating-inline {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 14px 22px;
+  gap: 0;
+  margin-top: 12px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+.ri-prefix {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+.ri-word-wrap {
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+  display: inline-block;
+  transition: width 0.3s ease;
+}
+.ri-word {
+  position: absolute;
+  top: 0; left: 0;
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s, transform 0.45s;
+}
+.ri-word.active { opacity: 1; transform: translateY(0); }
+
+/* MENU PREVIEW */
+#menu-preview {
+  padding: 120px 60px;
+  border-top: 1px solid var(--border);
+}
+.menu-preview-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 72px;
+  align-items: end;
+}
+.menu-preview-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 5vw, 70px);
+  color: var(--text-bright);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.menu-preview-header p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.75;
+  font-weight: 300;
+}
+.menu-wrapper {
+  perspective: 1400px;
+  display: flex;
+  justify-content: center;
+}
+.menu-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.1s linear;
+  will-change: transform;
+  width: 820px;
+  max-width: 100%;
+}
+
+/* THE MENU */
+.v-menu {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  font-family: 'DM Sans', sans-serif;
+  user-select: none;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+}
+.v-status-banner {
+  display: none;
+  padding: 7px 24px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid #1e1e1e;
+}
+.v-status-banner.show { display: block; }
+.v-status-banner.ok  { color: #5dbd60; background: rgba(93,189,96,0.06); }
+.v-status-banner.warn { color: var(--accent); background: rgba(192,57,43,0.06); }
+
+.v-titlebar {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  height: 50px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #222;
+}
+.v-title-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: #f0ece8;
+}
+.v-title-text span { color: var(--accent); }
+.v-title-link {
+  margin-left: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: #3a3a3a;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+.v-title-link:hover { color: var(--accent); }
+
+.v-body { display: flex; height: 450px; }
+
+.v-sidebar {
+  width: 140px;
+  background: #0d0d0d;
+  border-right: 1px solid #222;
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.v-nav-btn {
+  padding: 10px 22px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  border-left: 2px solid transparent;
+}
+.v-nav-btn:hover { color: #888; background: #131313; }
+.v-nav-btn.active { color: #f0ece8; background: #171717; border-left-color: var(--accent); padding-left: 20px; }
+
+.v-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #252525 transparent;
+}
+.v-content::-webkit-scrollbar { width: 3px; }
+.v-content::-webkit-scrollbar-thumb { background: #252525; }
+
+.v-page { display: none; }
+.v-page.active { display: block; }
+
+.v-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px 7px;
+  border-bottom: 1px solid #1c1c1c;
+}
+.v-section-bar { width: 2px; height: 12px; background: var(--accent); flex-shrink: 0; }
+.v-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.v-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  border-bottom: 1px solid #161616;
+  transition: background 0.1s;
+  position: relative;
+}
+.v-row:nth-child(even) { background: #131313; }
+.v-row:hover { background: #181818; }
+
+.v-row-left { display: flex; align-items: center; gap: 7px; }
+.v-row-label { font-size: 12px; color: #707070; font-weight: 300; letter-spacing: 0.02em; }
+
+/* Tooltip */
+.v-tip-btn {
+  width: 14px; height: 14px;
+  border: 1px solid #2e2e2e;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #3a3a3a;
+  cursor: default;
+  font-family: 'DM Mono', monospace;
+  position: relative;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+.v-tip-btn:hover { border-color: #555; color: #777; }
+.v-tooltip {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  background: #1d1d1d;
+  border: 1px solid #2e2e2e;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #999;
+  line-height: 1.5;
+  width: 210px;
+  z-index: 200;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  pointer-events: none;
+}
+.v-tip-btn:hover .v-tooltip { display: block; }
+
+.v-row-right { display: flex; align-items: center; gap: 10px; }
+
+/* Sliders */
+.v-slider-wrap { display: flex; align-items: center; gap: 10px; }
+.v-slider-track {
+  width: 96px; height: 2px;
+  background: #252525;
+  position: relative;
+  border-radius: 1px;
+  cursor: pointer;
+}
+.v-slider-fill { height: 100%; background: var(--accent); border-radius: 1px; position: absolute; left: 0; top: 0; pointer-events: none; }
+.v-slider-thumb {
+  width: 11px; height: 11px;
+  background: #e0dcd8;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+}
+.v-slider-thumb:active { cursor: grabbing; }
+.v-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--accent);
+  min-width: 42px;
+  text-align: right;
+}
+
+/* Toggles */
+.v-toggle {
+  width: 30px; height: 16px;
+  background: #252525;
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.v-toggle.on { background: var(--accent); }
+.v-toggle-dot {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 12px; height: 12px;
+  background: #f0ece8;
+  border-radius: 50%;
+  transition: left 0.18s;
+}
+.v-toggle.on .v-toggle-dot { left: 16px; }
+
+/* Key badge */
+.v-key-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #d0ccc8;
+  background: #1c1c1c;
+  border: 1px solid #2e2e2e;
+  padding: 3px 10px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  min-width: 40px;
+  text-align: center;
+}
+.v-key-badge:hover { border-color: #444; }
+.v-key-badge.recording { border-color: var(--accent); color: var(--accent); }
+
+/* Dropdowns */
+.v-dropdown {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #d0ccc8;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  padding: 4px 24px 4px 8px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23555'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+}
+.v-dropdown option { background: #1a1a1a; }
+
+/* Color picker */
+.v-color-swatch {
+  width: 22px; height: 14px;
+  border: 1px solid #2e2e2e;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+input[type="color"].v-color-input {
+  position: absolute; opacity: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+}
+
+/* Profile slots */
+.v-profile-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  border-bottom: 1px solid #161616;
+}
+.v-profile-slot:nth-child(even) { background: #131313; }
+.v-profile-name { font-size: 12px; color: #666; font-weight: 300; }
+.v-profile-btns { display: flex; gap: 7px; }
+.v-pbtn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border: 1px solid #282828;
+  color: #4a4a4a;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s;
+  background: none;
+  outline: none;
+}
+.v-pbtn:hover { color: #999; border-color: #444; }
+.v-pbtn.red { color: #6a1e1e; border-color: #331111; }
+.v-pbtn.red:hover { color: var(--accent); border-color: var(--accent); }
+.v-pbtn:disabled { opacity: 0.25; pointer-events: none; }
+
+/* Feedback */
+.v-suggest-wrap { padding: 22px 24px; }
+.v-suggest-desc { font-size: 12px; color: #5a5a5a; line-height: 1.7; margin-bottom: 18px; font-weight: 300; }
+.v-suggest-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #3a3a3a; text-transform: uppercase; margin-bottom: 8px; }
+.v-suggest-box {
+  width: 100%; height: 88px;
+  background: #191919; border: 1px solid #272727;
+  color: #d4d0cc;
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  padding: 9px 13px; resize: none; outline: none; margin-bottom: 13px;
+  transition: border-color 0.2s;
+}
+.v-suggest-box:focus { border-color: var(--accent); }
+.v-send-btn {
+  background: var(--accent); color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; letter-spacing: 0.14em;
+  padding: 8px 24px; border: none; cursor: pointer;
+  transition: background 0.2s; outline: none;
+}
+.v-send-btn:hover { background: var(--accent-dim); }
+
+/* Bottom bar */
+.v-bottom-bar {
+  height: 50px;
+  background: #0d0d0d;
+  border-top: 1px solid #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+.v-hint { font-family: 'DM Mono', monospace; font-size: 9px; color: #383838; letter-spacing: 0.08em; }
+.v-launch-btn {
+  background: var(--accent); color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px; letter-spacing: 0.14em;
+  padding: 8px 28px; cursor: pointer;
+  transition: background 0.2s; border: none; outline: none;
+  text-decoration: none; display: inline-block;
+}
+.v-launch-btn:hover { background: var(--accent-dim); }
+
+/* VIDEO */
+#video {
+  padding: 120px 60px;
+  border-top: 1px solid var(--border);
+}
+.video-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.video-submit-note { font-size: 11px; color: #383838; }
+.video-submit-note span { color: #5a2a24; }
+
+.video-slider-wrap { position: relative; width: 100%; overflow: hidden; border: 1px solid var(--border); }
+.video-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25,0.1,0.25,1);
+}
+.video-slide {
+  min-width: 100%;
+  background: var(--bg2);
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.video-slide video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video-placeholder-icon {
+  width: 52px; height: 52px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+}
+.video-placeholder-icon svg { fill: #3a3a3a; }
+.video-placeholder-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #333;
+  text-transform: uppercase;
+}
+.video-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+.video-arrow {
+  width: 42px; height: 42px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+  font-size: 16px;
+}
+.video-arrow:hover { border-color: var(--accent); color: var(--text-bright); }
+.video-dots { display: flex; gap: 8px; align-items: center; }
+.video-dot {
+  width: 5px; height: 5px;
+  background: #2a2a2a;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.video-dot.active { background: var(--accent); }
+
+/* DOWNLOAD */
+#download {
+  padding: 160px 60px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.dl-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+#download h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 8vw, 110px);
+  color: var(--text-bright);
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  margin-bottom: 40px;
+}
+.dl-reqs {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  margin-bottom: 52px;
+  line-height: 2;
+}
+.dl-reqs span { display: block; }
+.btn-dl {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  padding: 18px 60px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.14em;
+  transition: background 0.2s;
+}
+.btn-dl:hover { background: var(--accent-dim); }
+.dl-note {
+  margin-top: 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: #2e2e2e;
+  letter-spacing: 0.08em;
+}
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 60px;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: #2a2a2a;
+}
+.footer-logo span { color: #3a1410; }
+
+/* SCROLL REVEAL */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  nav, #hero, #statement, #menu-preview, #video, #download, footer { padding-left: 28px; padding-right: 28px; }
+  #statement { grid-template-columns: 1fr; }
+  .menu-preview-header { grid-template-columns: 1fr; }
+  .nav-links { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VISAGE<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#statement">What is it</a></li>
+    <li><a href="#menu-preview">Menu</a></li>
+    <li><a href="#video">In action</a></li>
+    <li><a href="#download" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <h1 class="hero-title">
+      VISAGE
+      <span class="line2">EXTERNAL</span>
+    </h1>
+    <p class="hero-sub">A different kind of tool. Not because of what it does, but how it does it.</p>
+    <div class="rotating-line">Visage is&nbsp;<span class="rotating-word-wrap" id="heroRotator"><span class="rotating-word active">zero risk</span><span class="rotating-word">no bans guaranteed</span><span class="rotating-word">virus free</span><span class="rotating-word">zero injection</span><span class="rotating-word">not hidden malware</span><span class="rotating-word">truly external</span></span>&nbsp;by design.</div>
+    <div class="hero-actions">
+      <a href="#download" class="btn-primary">Download</a>
+      <a href="#statement" class="btn-ghost">Learn more</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT -->
+<section id="statement">
+  <div class="statement-left reveal">
+    <h2>Truly<br><em>External</em><br>means<br>something<br>here.</h2>
+  </div>
+  <div class="statement-right reveal">
+    <p>The word "external" gets used loosely. Most tools that call themselves external still reach into game memory, hook into processes, or leave traces behind. Visage does none of that. It reads only what your screen shows, and nothing else.</p>
+    <p>Your game process is never touched. No files are written into game directories. No code runs inside anything you didn't start yourself. When you close Visage, it's as if it was never there.</p>
+    <div class="rotating-inline">
+      <span class="ri-prefix">Always:</span><span class="ri-word-wrap" id="stmtRotator"><span class="ri-word active">injection-free</span><span class="ri-word">zero risk</span><span class="ri-word">leaves no memory reads</span><span class="ri-word">leaves no process hooks</span><span class="ri-word">leaves no file traces</span><span class="ri-word">touches no game files</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- MENU PREVIEW -->
+<section id="menu-preview">
+  <div class="menu-preview-header">
+    <h2 class="reveal">The Menu,<br>up close.</h2>
+    <p class="reveal">Every setting is here, nothing hidden. Feel free to click on stuff!</p>
+  </div>
+  <div class="menu-wrapper">
+    <div class="menu-3d" id="menuCard">
+      <div class="v-menu">
+
+        <div class="v-status-banner" id="vStatusBanner"></div>
+
+        <div class="v-titlebar">
+          <div class="v-title-text">VISAGE <span>EXTERNAL</span></div>
+          <div class="v-title-link">visage.gg</div>
+        </div>
+
+        <div class="v-body">
+          <div class="v-sidebar">
+            <div class="v-nav-btn active" onclick="switchTab('settings',this)">Settings</div>
+            <div class="v-nav-btn" onclick="switchTab('profiles',this)">Profiles</div>
+            <div class="v-nav-btn" onclick="switchTab('suggestions',this)">Feedback</div>
+          </div>
+
+          <div class="v-content">
+
+            <!-- SETTINGS PAGE -->
+            <div class="v-page active" id="tab-settings">
+
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">General</div></div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Toggle Hotkey</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Click to record. Press any key or combo. This key toggles aim assist on and off.</span></span>
+                </div>
+                <div class="v-row-right"><span class="v-key-badge" data-hotkey="toggle">F8</span></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Menu Hotkey</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Click to record. Press this key to open or close the settings menu while in-game.</span></span>
+                </div>
+                <div class="v-row-right"><span class="v-key-badge" data-hotkey="menu">F9</span></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Quit Hotkey</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Click to record. Pressing this key closes Visage entirely.</span></span>
+                </div>
+                <div class="v-row-right"><span class="v-key-badge" data-hotkey="quit">Q</span></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Confidence</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">How certain detection needs to be before marking a target. Lower catches more but may include false positives.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="10" data-max="99" data-val="50" data-fmt="pct">
+                      <div class="v-slider-fill" style="width:53%"></div>
+                      <div class="v-slider-thumb" style="left:53%"></div>
+                    </div>
+                    <span class="v-value">50%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Monitor</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Which display your game is running on. 1 is your primary monitor.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <select class="v-dropdown"><option>1</option><option>2</option><option>3</option></select>
+                </div>
+              </div>
+
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Aim Assist</div></div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Aim Assist</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Master toggle for automatic mouse movement toward detected targets.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Strength</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">How fast the cursor moves toward the target each frame. Higher is snappier.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="1" data-max="50" data-val="14" data-fmt="dec2" data-scale="0.01">
+                      <div class="v-slider-fill" style="width:27%"></div>
+                      <div class="v-slider-thumb" style="left:27%"></div>
+                    </div>
+                    <span class="v-value">0.14</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Smoothness</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Controls easing. Lower values make movement feel more gradual and human-like. 1.0 is immediate.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="1" data-max="100" data-val="100" data-fmt="dec2" data-scale="0.01">
+                      <div class="v-slider-fill" style="width:100%"></div>
+                      <div class="v-slider-thumb" style="left:100%"></div>
+                    </div>
+                    <span class="v-value">1.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">FOV Radius</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">The pixel radius around your crosshair that is scanned for targets. Anything outside this area is ignored.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="50" data-max="800" data-val="300" data-fmt="px">
+                      <div class="v-slider-fill" style="width:33%"></div>
+                      <div class="v-slider-thumb" style="left:33%"></div>
+                    </div>
+                    <span class="v-value">300px</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Head Offset</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Where on the target to aim. 0.0 aims at the top of the detection box. Increase to aim lower on the body.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="0" data-max="40" data-val="20" data-fmt="dec2" data-scale="0.01">
+                      <div class="v-slider-fill" style="width:50%"></div>
+                      <div class="v-slider-thumb" style="left:50%"></div>
+                    </div>
+                    <span class="v-value">0.20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Prediction</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Frames to lead a moving target based on its recent path. 0 is off. Try 2-5 for fast-moving targets. Too high will overshoot.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-slider-wrap">
+                    <div class="v-slider-track" data-min="0" data-max="100" data-val="0" data-fmt="fr" data-scale="0.1">
+                      <div class="v-slider-fill" style="width:0%"></div>
+                      <div class="v-slider-thumb" style="left:0%"></div>
+                    </div>
+                    <span class="v-value">0.0fr</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Overlay</div></div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Show FPS</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Displays a live FPS counter on the overlay.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Show Tips</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Shows the hotkey hint bar at the top right of the overlay window.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Show Boxes</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Draws boxes around detected targets. Aim assist continues to work even with boxes hidden.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Show FOV Circle</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Draws a circle centred on your crosshair showing the active detection area.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Show Dot</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Places a dot at the exact aim point on each detected target.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Box Colour</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">The colour used to draw detection boxes. Click the swatch to open a colour picker.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <div class="v-color-swatch" id="colorSwatch" style="background:#00ff00" onclick="document.getElementById('colorPicker').click()"></div>
+                  <input type="color" id="colorPicker" class="v-color-input" value="#00ff00">
+                  <span class="v-value" id="colorValue" style="font-size:10px;">#00ff00</span>
+                </div>
+              </div>
+
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Window</div></div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Streamer Mode</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Hides FPS, hints, and status text from the overlay so nothing appears on screen.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Always On Top</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Keeps the Visage window above all other open windows at all times.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Corner Quit</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Move your mouse to the very top-left corner of your screen to quit Visage instantly.</span></span>
+                </div>
+                <div class="v-row-right"><div class="v-toggle on"><div class="v-toggle-dot"></div></div></div>
+              </div>
+
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Model</div></div>
+
+              <div class="v-row">
+                <div class="v-row-left">
+                  <span class="v-row-label">Resolution</span>
+                  <span class="v-tip-btn">?<span class="v-tooltip">Detection scan area size. 320 is faster and lighter. 640 is more precise at the cost of performance. First run at a new size takes a moment to prepare.</span></span>
+                </div>
+                <div class="v-row-right">
+                  <select class="v-dropdown" id="resDropdown">
+                    <option value="320">320px</option>
+                    <option value="640">640px</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- PROFILES PAGE -->
+            <div class="v-page" id="tab-profiles">
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Save Slots</div></div>
+              <div id="profileSlots"></div>
+            </div>
+
+            <!-- FEEDBACK PAGE -->
+            <div class="v-page" id="tab-suggestions">
+              <div class="v-section-head"><div class="v-section-bar"></div><div class="v-section-label">Feedback</div></div>
+              <div class="v-suggest-wrap">
+                <p class="v-suggest-desc">Have a clip to share, or something to report? Drop it here. Suggestions submitted in the real app go straight through.</p>
+                <div class="v-suggest-label">Your message</div>
+                <textarea class="v-suggest-box" id="suggestBox" placeholder="What's on your mind..."></textarea>
+                <button class="v-send-btn" id="sendBtn" onclick="sendSuggestion()">Send</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="v-bottom-bar">
+          <span class="v-hint">[F8] Toggle &nbsp;&middot;&nbsp; [F9] Menu &nbsp;&middot;&nbsp; [Q] Quit</span>
+          <a href="#download" class="v-launch-btn">LAUNCH</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section id="video">
+  <div class="video-label reveal">
+    <span>Visage External / In action</span>
+    <span class="video-submit-note">Submit your clips in the <span>Feedback</span> tab above</span>
+  </div>
+  <div class="video-slider-wrap reveal">
+    <div class="video-track" id="videoTrack">
+      <div class="video-slide">
+        <div class="video-placeholder-icon"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 4l12 6-12 6V4z"/></svg></div>
+        <div class="video-placeholder-label">Clip 1 — coming soon</div>
+      </div>
+      <div class="video-slide">
+        <div class="video-placeholder-icon"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 4l12 6-12 6V4z"/></svg></div>
+        <div class="video-placeholder-label">Clip 2 — coming soon</div>
+      </div>
+      <div class="video-slide">
+        <div class="video-placeholder-icon"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M6 4l12 6-12 6V4z"/></svg></div>
+        <div class="video-placeholder-label">Clip 3 — coming soon</div>
+      </div>
+    </div>
+  </div>
+  <div class="video-nav reveal">
+    <button class="video-arrow" onclick="videoNav(-1)">&#8592;</button>
+    <div class="video-dots" id="videoDots"></div>
+    <button class="video-arrow" onclick="videoNav(1)">&#8594;</button>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="dl-eyebrow reveal">Get Visage</div>
+  <h2 class="reveal">DOWNLOAD<br>NOW</h2>
+  <div class="dl-reqs reveal">
+    <span>Windows 10 / 11 &nbsp;&nbsp; NVIDIA, AMD, or CPU</span>
+    <span>No installation. Run and go.</span>
+  </div>
+  <a href="#" class="btn-dl reveal">Download Visage External</a>
+  <div class="dl-note reveal">Completely Free. No keys required.</div>
+</section>
+
+<footer>
+  <div class="footer-logo">VISAGE<span>.</span></div>
+</footer>
+
+<script>
+/* MEASURE TEXT WIDTH */
+function measureText(text, font) {
+  const c = document.createElement('canvas');
+  const ctx = c.getContext('2d');
+  ctx.font = font;
+  return ctx.measureText(text).width;
+}
+
+/* HERO ROTATOR */
+(function(){
+  const wrap = document.getElementById('heroRotator');
+  const words = wrap.querySelectorAll('.rotating-word');
+  let idx = 0;
+  function setW(w){ wrap.style.width = (measureText(w.textContent,'300 13px DM Mono,monospace')+3)+'px'; }
+  setW(words[0]);
+  setInterval(()=>{
+    words[idx].classList.remove('active');
+    idx=(idx+1)%words.length;
+    words[idx].classList.add('active');
+    setW(words[idx]);
+  },1900);
+})();
+
+/* STATEMENT ROTATOR */
+(function(){
+  const wrap = document.getElementById('stmtRotator');
+  const words = wrap.querySelectorAll('.ri-word');
+  let idx = 0;
+  function setW(w){ wrap.style.width = (measureText(w.textContent,'400 13px DM Mono,monospace')+4)+'px'; }
+  setW(words[0]);
+  setInterval(()=>{
+    words[idx].classList.remove('active');
+    idx=(idx+1)%words.length;
+    words[idx].classList.add('active');
+    setW(words[idx]);
+  },1900);
+})();
+
+/* SCROLL REVEAL */
+const revEls = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); ro.unobserve(e.target); } });
+},{threshold:0.08});
+revEls.forEach(el=>ro.observe(el));
+
+/* MENU TILT — only fires when mouse is over the card */
+const menuCard = document.getElementById('menuCard');
+let tiltOn = false;
+menuCard.addEventListener('mouseenter',()=>{ tiltOn=true; });
+menuCard.addEventListener('mouseleave',()=>{
+  tiltOn=false;
+  menuCard.style.transform='rotateX(0deg) rotateY(0deg)';
+});
+menuCard.addEventListener('mousemove',e=>{
+  if(!tiltOn) return;
+  const r=menuCard.getBoundingClientRect();
+  const rotX=-((e.clientY-r.top-r.height/2)/(r.height/2))*7;
+  const rotY= ((e.clientX-r.left-r.width/2) /(r.width/2)) *7;
+  menuCard.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+});
+
+/* TAB SWITCHING */
+function switchTab(name,btn){
+  document.querySelectorAll('.v-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.v-nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* STATUS BANNER */
+let bannerTimer;
+function showBanner(msg,type){
+  const b=document.getElementById('vStatusBanner');
+  b.textContent=msg;
+  b.className='v-status-banner show '+(type||'ok');
+  clearTimeout(bannerTimer);
+  bannerTimer=setTimeout(()=>b.classList.remove('show'),3200);
+}
+
+/* TOGGLES */
+document.querySelectorAll('.v-toggle').forEach(t=>{
+  t.addEventListener('click',()=>t.classList.toggle('on'));
+});
+
+/* SLIDERS */
+function fmtVal(raw,fmt,scale){
+  const v=raw*(parseFloat(scale)||1);
+  if(fmt==='pct') return Math.round(v)+'%';
+  if(fmt==='dec2') return v.toFixed(2);
+  if(fmt==='px')  return Math.round(v)+'px';
+  if(fmt==='fr')  return v.toFixed(1)+'fr';
+  return Math.round(v);
+}
+
+document.querySelectorAll('.v-slider-track').forEach(track=>{
+  const fill  = track.querySelector('.v-slider-fill');
+  const thumb = track.querySelector('.v-slider-thumb');
+  const valEl = track.closest('.v-slider-wrap').querySelector('.v-value');
+  const min=parseFloat(track.dataset.min);
+  const max=parseFloat(track.dataset.max);
+  const fmt=track.dataset.fmt;
+  const scale=track.dataset.scale||1;
+  let dragging=false;
+
+  function update(clientX){
+    const rect=track.getBoundingClientRect();
+    const pct=Math.min(1,Math.max(0,(clientX-rect.left)/rect.width));
+    const raw=min+pct*(max-min);
+    fill.style.width=(pct*100)+'%';
+    thumb.style.left=(pct*100)+'%';
+    valEl.textContent=fmtVal(raw,fmt,scale);
+  }
+
+  thumb.addEventListener('mousedown',e=>{ dragging=true; e.preventDefault(); });
+  document.addEventListener('mousemove',e=>{ if(dragging) update(e.clientX); });
+  document.addEventListener('mouseup',()=>{ dragging=false; });
+  track.addEventListener('click',e=>update(e.clientX));
+});
+
+/* HOTKEY RECORDER */
+let recordingBadge=null;
+document.querySelectorAll('.v-key-badge').forEach(badge=>{
+  badge.addEventListener('click',()=>{
+    if(recordingBadge){ recordingBadge.classList.remove('recording'); recordingBadge.textContent=recordingBadge._prev; }
+    recordingBadge=badge;
+    badge._prev=badge.textContent;
+    badge.textContent='...';
+    badge.classList.add('recording');
+  });
+});
+document.addEventListener('keydown',e=>{
+  if(!recordingBadge) return;
+  const ignore=['Control','Alt','Shift','Meta'];
+  if(ignore.includes(e.key)) return;
+  e.preventDefault();
+  const parts=[];
+  if(e.ctrlKey)  parts.push('Ctrl');
+  if(e.altKey)   parts.push('Alt');
+  if(e.shiftKey) parts.push('Shift');
+  parts.push(e.key.length===1?e.key.toUpperCase():e.key);
+  recordingBadge.textContent=parts.join('+');
+  recordingBadge.classList.remove('recording');
+  recordingBadge=null;
+});
+
+/* COLOR PICKER */
+const picker=document.getElementById('colorPicker');
+const swatch=document.getElementById('colorSwatch');
+const colorVal=document.getElementById('colorValue');
+picker.addEventListener('input',()=>{ swatch.style.background=picker.value; colorVal.textContent=picker.value; });
+
+/* PROFILES */
+const NUM_SLOTS=5;
+const savedProfiles={};
+function buildProfiles(){
+  const c=document.getElementById('profileSlots');
+  c.innerHTML='';
+  for(let i=1;i<=NUM_SLOTS;i++){
+    const saved=!!savedProfiles[i];
+    const div=document.createElement('div');
+    div.className='v-profile-slot';
+    div.innerHTML=`
+      <span class="v-profile-name">Slot ${i}${saved?` <span style="color:var(--accent);font-size:10px;font-family:'DM Mono',monospace;">[saved]</span>`:''}
+      </span>
+      <div class="v-profile-btns">
+        <button class="v-pbtn" onclick="profileSave(${i})">Save</button>
+        <button class="v-pbtn" onclick="profileLoad(${i})" ${saved?'':'disabled'}>Load</button>
+        <button class="v-pbtn red" onclick="profileReset(${i})" ${saved?'':'disabled'}>Reset</button>
+      </div>`;
+    c.appendChild(div);
+  }
+}
+function profileSave(n){ savedProfiles[n]={t:Date.now()}; showBanner(`Profile ${n} saved.`,'ok'); buildProfiles(); }
+function profileLoad(n){ if(!savedProfiles[n])return; showBanner(`Profile ${n} loaded.`,'ok'); }
+function profileReset(n){ if(!savedProfiles[n])return; delete savedProfiles[n]; showBanner(`Profile ${n} cleared.`,'warn'); buildProfiles(); }
+buildProfiles();
+
+/* FEEDBACK */
+function sendSuggestion(){
+  const box=document.getElementById('suggestBox');
+  if(!box.value.trim()) return;
+  box.value='';
+  showBanner('Suggestion sent. Thank you.','ok');
+}
+
+/* VIDEO SLIDER */
+(function(){
+  const track=document.getElementById('videoTrack');
+  const slides=track.querySelectorAll('.video-slide');
+  const dotsWrap=document.getElementById('videoDots');
+  let cur=0;
+  slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='video-dot'+(i===0?' active':'');
+    d.onclick=()=>goTo(i);
+    dotsWrap.appendChild(d);
+  });
+  function goTo(i){
+    cur=(i+slides.length)%slides.length;
+    track.style.transform=`translateX(-${cur*100}%)`;
+    dotsWrap.querySelectorAll('.video-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
+  }
+  window.videoNav=dir=>goTo(cur+dir);
+})();
+</script>
+</body>
+</html>
